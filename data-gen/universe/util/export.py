@@ -32,7 +32,7 @@ def sormas(world):
     """
 
     configuration = sormas_api.Configuration(
-        host="https://sormas-docker-test.com/sormas-rest",
+        host="https://localhost:6080/sormas-rest",
         username="SurvOff",
         password="SurvOff"
     )

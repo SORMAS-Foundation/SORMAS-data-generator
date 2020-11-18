@@ -4,7 +4,7 @@ from datetime import datetime
 import psycopg2
 
 
-def sormas_db_connect(host="localhost", port="5432", dbname="sormas", user="sormas_reader", password="password"):
+def sormas_db_connect(host="localhost", port="5432", dbname="sormas", user="postgres", password="password"):
     conn = psycopg2.connect(host=host, port=port, dbname=dbname, user=user, password=password)
     return conn
 
