@@ -1,12 +1,11 @@
 from datetime import datetime, time
 
-from sormas import CaseDataDto, CaseClassification, InvestigationStatus
+from sormas import CaseDataDto, CaseClassification, InvestigationStatus, CaseReferenceDto
 
 from generator.district import default_district
 from generator.facility import none_facility_ref
 from generator.person import person_ref
 from generator.region import default_region
-from generator.symptoms import gen_symptom_dto
 from generator.user import surv_sup_user_ref
 from generator.utils import duuid
 
@@ -65,7 +64,7 @@ p_cluster_case = 0.3
 # etc.
 # Probabilities that a given case within the default country is of a given
 # generation
-p_case_generation = {'0' : 0.2, '1' : 0.3, '2' : 0.2, '3' : 0.15, '4' : 0.15}
+p_case_generation = {'0': 0.2, '1': 0.3, '2': 0.2, '3': 0.15, '4': 0.15}
 # Relative probability of infection as a function of the difference in
 # generations between two cases. Taken to be an exponential of the distance -1
 # (so that a case cannot be infected by a case of identical or higher
@@ -76,6 +75,8 @@ infect_diff_generation_scale = 1.5
 # All cases infected within `init_days` days of the first infection are roots in
 # transmission chains (generation "0").
 init_days = 14
+
+
 # todo End
 
 
@@ -83,14 +84,15 @@ def impute_onset_date():
     # todo
     pass
 
+
 def impute_infection_date():
     # todo
     pass
 
 
-def gen_case_dto(date, p_uuid, disease):
+def gen_case_dto(date, p_uuid, disease, symptoms):
     # FIXME date needs to be more specified
-    date = datetime.combine(date, time(0, 0, 0, ))
+    date = datetime.combine(date, time(0, 0, 0))
     case_dto = CaseDataDto(
         uuid=duuid(),
         disease=disease,
@@ -105,6 +107,11 @@ def gen_case_dto(date, p_uuid, disease):
         district=default_district(),
         health_facility=none_facility_ref(),  # FIXME not required, somewhat validated but without telling the user
         health_facility_details="Home",  # FIXME not required, somewhat validated but without telling the user
-        symptoms=gen_symptom_dto(disease)
+        symptoms=symptoms
     )
     return case_dto
+
+
+def case_ref(case_uuid):
+    case_ref_dto = CaseReferenceDto(uuid=case_uuid)
+    return case_ref_dto

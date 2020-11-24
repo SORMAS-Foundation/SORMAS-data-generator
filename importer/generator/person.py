@@ -1,7 +1,7 @@
 import random
 from random import choice
 
-from sormas import PersonReferenceDto, Sex, CaseReferenceDto
+from sormas import PersonReferenceDto, Sex
 
 from generator.utils import duuid
 from universe.person import Person
@@ -28,7 +28,7 @@ last_names = [
     'Müller', 'Schmidt', 'Schneider', 'Fischer', 'Weber', 'Meyer',
     'Wagner', 'Becker', 'Schulz', 'Hoffmann', 'Schäfer', 'Koch', 'Bauer',
     'Richter', 'Klein', 'Wolf', 'Schröder', 'Neumann', 'Schwarz', 'Zimmermann',
-    'Braun', 'Krüger', 'Hofmann', 'Yılmaz', 'Kaya', 'Nowak', 'Kowalski'
+    'Braun', 'Krüger', 'Hofmann', 'Yilmaz', 'Kaya', 'Nowak', 'Kowalski'
 ]
 # todo END
 
@@ -69,22 +69,24 @@ def assign_address():
     pass
 
 
-def gen_person_dto(first_name=None, last_name=None, sex=None):
-    if sex is None:
-        sex = choice([Sex.MALE, Sex.FEMALE])
+def gen_person_dto(first_name=None, last_name=None, sex=None, birthdate_yyyy=None):
     if first_name is None:
         first_name = choice(male_first_names) if sex is Sex.MALE else choice(female_first_names)
     if last_name is None:
         last_name = choice(last_names)
-
+    if sex is None:
+        sex = choice([Sex.MALE, Sex.FEMALE])
+    if birthdate_yyyy is None:
+        birthdate_yyyy = random.randrange(10, 90) # FIXME
     uuid = duuid()
 
     # Person extends PersonDto, but Person overwrites __str__ for better debugging
     person_dto = Person(
         uuid=uuid,
-        sex=sex,
         first_name=first_name,
-        last_name=last_name
+        last_name=last_name,
+        sex=sex,
+        birthdate_yyyy=birthdate_yyyy
     )
     return person_dto
 
@@ -92,8 +94,3 @@ def gen_person_dto(first_name=None, last_name=None, sex=None):
 def person_ref(person_uuid):
     person_ref_dto = PersonReferenceDto(uuid=person_uuid)
     return person_ref_dto
-
-
-def case_ref(case_uuid):
-    case_ref_dto = CaseReferenceDto(uuid=case_uuid)
-    return case_ref_dto
