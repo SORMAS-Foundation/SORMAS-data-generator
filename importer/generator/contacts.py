@@ -7,8 +7,9 @@ from sormas import ContactDto
 # Probability that a contact resides in the county of the local health
 # authority responsible for the index (otherwise equal probabilities to reside
 # in the other counties)
+from generator.cases import case_ref
 from generator.health_condition import gen_health_condition_dto
-from generator.person import person_ref, case_ref
+from generator.person import person_ref
 from generator.user import surv_sup_user_ref
 from generator.utils import dnow, duuid
 
@@ -62,6 +63,5 @@ def gen_contact_dto(person_uuid, case_uuid, disease):
         disease=disease,
         caze=case_ref(case_uuid),  # todo validation exception talking about region
         health_conditions=gen_health_condition_dto()  # todo ContactFacadeRjb:1092 nullpointer if missing
-
     )
     return contact_dto

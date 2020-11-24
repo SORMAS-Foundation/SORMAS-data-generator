@@ -45,16 +45,16 @@ symptom_distribution = {
 }
 
 
-def gen_symptom_dto(disease):
+def gen_symptom_dto(disease,symptoms= None):
     if disease is not Disease.CORONAVIRUS:
         raise NotImplementedError
 
-    distribution = symptom_distribution[disease]
 
-    symptoms = {}
-
-    for pos, prob in distribution.items():
-        symptoms[pos] = random.choices([SymptomState.YES, SymptomState.NO], [prob, 1.0 - prob])[0]
+    if symptoms is None:
+        symptoms = {}
+        distribution = symptom_distribution[disease]
+        for pos, prob in distribution.items():
+            symptoms[pos] = random.choices([SymptomState.YES, SymptomState.NO], [prob, 1.0 - prob])[0]
 
     symptom_dto = SymptomsDto(
         **symptoms
