@@ -12,5 +12,5 @@ Goal of this project is to generate and import credible test data into SORMAS. T
 
 # Run it
 `docker-compose up -d`: This will start a minimal stack of [SORMAS-Docker](https://github.com/hzi-braunschweig/SORMAS-Docker) which receives the generated data
-`$data-gen: ./gen-client.sh && source venv/bin/activate && python main.py`
+`$importer: ./gen-client.sh && source venv/bin/activate && python main.py`
  
