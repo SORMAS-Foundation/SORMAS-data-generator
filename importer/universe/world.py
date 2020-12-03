@@ -57,7 +57,7 @@ class World:
                 cur.execute("UPDATE diseaseconfiguration SET active = false WHERE disease != 'CORONAVIRUS'")
 
     def _load_model(self):
-        path = "../sormas-oegd-credible-testdata/data/out/"
+        path = "../generator/data/out/"
 
         persons = pd.read_csv(path + "persons_df.csv")
         persons = persons.rename(columns={'id': 'id_person'})
