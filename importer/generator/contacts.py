@@ -63,5 +63,6 @@ def gen_contact_dto(person_uuid, case_uuid, disease):
         disease=disease,
         caze=case_ref(case_uuid),  # todo validation exception talking about region
         health_conditions=gen_health_condition_dto()  # todo ContactFacadeRjb:1092 nullpointer if missing
+        # todo contact classifaction is required in UI
     )
     return contact_dto

@@ -1,13 +1,19 @@
 import random
 from datetime import timedelta
 
+import numpy as np
 import pandas as pd
-from sormas import Disease, SymptomState
+import sormas as sormas_api
+from sormas import Disease, SymptomState, CaseOutcome, PresentCondition
 
+from generator.cases import gen_case_dto
+from generator.district import insert_district
 from generator.event import gen_event_dto
+from generator.location import gen_location_dto
 from generator.person import gen_person_dto
+from generator.region import insert_region, region_ref
 from generator.symptoms import gen_symptom_dto
-from generator.utils import dnow
+from generator.utils import sormas_db_connect
 from universe.case import Case
 from universe.contact import Contact
 from universe.event import Event
@@ -24,6 +30,31 @@ class World:
         self.today = Tick(beginning)
         self.history = list()
         self.model = self._load_model()
+
+        configuration = sormas_api.Configuration(
+            host="http://localhost:6080/sormas-rest",
+            username="SurvOff",
+            password="SurvOff"
+        )
+        configuration.verify_ssl = False
+        configuration.debug = True
+        self.sormas_api_config = configuration
+
+        self.regions = {}
+        self.districts = {}
+
+        with sormas_db_connect() as conn:
+            with conn.cursor() as cur:
+                cur.execute("SELECT name, uuid FROM region")
+                res = cur.fetchone()
+                self.regions[res[0]] = res[1]
+                cur.execute("SELECT name, uuid FROM district")
+                res = cur.fetchone()
+                self.districts[res[0]] = res[1]
+
+                # disable other diseases
+                cur.execute("UPDATE diseaseconfiguration SET active = true WHERE disease = 'CORONAVIRUS'")
+                cur.execute("UPDATE diseaseconfiguration SET active = false WHERE disease != 'CORONAVIRUS'")
 
     def _load_model(self):
         path = "../sormas-oegd-credible-testdata/data/out/"
@@ -59,18 +90,33 @@ class World:
         date = pers.reporting_date
         birthdate_yyyy = None if type(date) is float else int(date.split('-')[0]) - pers.age
 
+        lat = 0 if np.isnan(pers.latitude) else pers.latitude  # Fixme 0 condition
+        lon = 0 if np.isnan(pers.longitude) else pers.longitude  # Fixme 0 condition
+        location_dto = gen_location_dto(
+            lat, lon,
+            region_ref(self.regions['Voreingestellte Bundesländer']),
+            self.districts['Voreingestellter Landkreis']
+        )
         person = gen_person_dto(
             first_name=pers.first_name,
             last_name=pers.family_name,
             # todo other values like diverse
             sex=Sex.MALE if pers.sex == 'm' else Sex.FEMALE,
-            birthdate_yyyy=birthdate_yyyy
+            birthdate_yyyy=birthdate_yyyy,
+            address=location_dto,
+            present_condition=PresentCondition.DEAD if pers.died else PresentCondition.ALIVE
         )
         # todo use Person class?
         return person
 
-    def add_district(self, district):
-        raise NotImplementedError()
+    def add_region(self, region):
+        region_id = insert_region(region)
+        self.regions[region] = region_id
+
+    def add_district(self, district, region):
+        region_id = self.regions[region]
+        district_id = insert_district(district, region_id)
+        self.districts[district] = district_id
 
     def pre_populate_susceptible(self, n=5):
         for _ in range(n):
@@ -107,37 +153,56 @@ class World:
 
         for i in range(n):
             m_case = model_cases.iloc[i]
-            person = self._create_person(m_case)
-            symptoms = gen_symptom_dto(Disease.CORONAVIRUS, map_symptom(m_case.symptom))
-            case = Case(dnow(), person, disease, symptoms)
+            person_dto = self._create_person(m_case)
+            symptoms_dto = gen_symptom_dto(Disease.CORONAVIRUS, map_symptom(m_case.symptom))
+
+            case_outcome = CaseOutcome.DECEASED if m_case.died else CaseOutcome.NO_OUTCOME
+            outcome_date = m_case.reporting_date  # FIXME
+
+            case_dto = gen_case_dto(
+                date=m_case.reporting_date,
+                p_uuid=person_dto.uuid,
+                disease=disease,
+                symptoms=symptoms_dto,
+                case_outcome=case_outcome,
+                outcome_date=outcome_date
+            )
+            case = Case(person_dto, case_dto)
             self.today.cases.append(case)
 
             # create contacts for this case
             m_contacts = model_contacts.query(f'id_index == {m_case.id_person}')
             for m_contacts in m_contacts.iterrows():
-                person = self._create_person(m_contacts[1])
-                contact = Contact(person, case.inner.uuid, case.disease())
+                person_dto = self._create_person(m_contacts[1])
+                contact = Contact(person_dto, case.inner.uuid, case.disease())
                 self.today.contacts.append(contact)
 
     def pre_populate_events_and_participants(self, n=2):
-        model_cases = self.model['events']
+        model_events = self.model['events']
         model_participants = self.model['event_participants']
         for i in range(n):
-            m_event = model_cases.iloc[i]
-
+            m_event = model_events.iloc[i]
+            import datetime
             # todo missing fields address longitude latitude
-            start_date = m_event.date
-            event_desc = random.choice(['Party', 'BBQ', 'Family meeting'])
-            event = gen_event_dto(event_desc, start_date)
+            start_date = datetime.date.today()  # m_event.date
+            event_desc = 'hope1'  # random.choice(['Party', 'BBQ', 'Family meeting'])
+            location_dto = gen_location_dto(
+                m_event.latitude,
+                m_event.longitude,
+                region_ref(self.regions['Voreingestellte Bundesländer']),
+                self.districts['Voreingestellter Landkreis']  # m_event.address]
+            )
+            # FIXME use the real place
+            event_dto = gen_event_dto(event_desc, start_date, location_dto, Disease.CORONAVIRUS)
 
             # add participants
             m_participants = model_participants.query(f'id_event == {m_event.id}')
             participants = []
             for m_particpant in m_participants.iterrows():
                 person = self._create_person(m_particpant[1])
-                particpant = EventParticipant(person, event.uuid)
+                particpant = EventParticipant(person, event_dto.uuid)
                 participants.append(particpant)
-            self.today.events.append(Event(event, participants))
+            self.today.events.append(Event(event_dto, participants))
 
     def pre_populate_infection_chains(self):
         raise NotImplementedError

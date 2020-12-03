@@ -1,7 +1,7 @@
 import random
 from random import choice
 
-from sormas import PersonReferenceDto, Sex
+from sormas import PersonReferenceDto, Sex, PresentCondition
 
 from generator.utils import duuid
 from universe.person import Person
@@ -69,7 +69,7 @@ def assign_address():
     pass
 
 
-def gen_person_dto(first_name=None, last_name=None, sex=None, birthdate_yyyy=None):
+def gen_person_dto(first_name=None, last_name=None, sex=None, birthdate_yyyy=None, address=None, present_condition=None):
     if first_name is None:
         first_name = choice(male_first_names) if sex is Sex.MALE else choice(female_first_names)
     if last_name is None:
@@ -77,16 +77,19 @@ def gen_person_dto(first_name=None, last_name=None, sex=None, birthdate_yyyy=Non
     if sex is None:
         sex = choice([Sex.MALE, Sex.FEMALE])
     if birthdate_yyyy is None:
-        birthdate_yyyy = random.randrange(10, 90) # FIXME
-    uuid = duuid()
+        birthdate_yyyy = random.randrange(10, 90)  # FIXME
+
+    #fixme address can be none
 
     # Person extends PersonDto, but Person overwrites __str__ for better debugging
     person_dto = Person(
-        uuid=uuid,
+        uuid=duuid(),
         first_name=first_name,
         last_name=last_name,
         sex=sex,
-        birthdate_yyyy=birthdate_yyyy
+        birthdate_yyyy=birthdate_yyyy,
+        address=address,
+        present_condition=present_condition
     )
     return person_dto
 

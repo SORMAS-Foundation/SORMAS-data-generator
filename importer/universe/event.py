@@ -11,6 +11,6 @@ class Event:
 
     def to_dict(self):
         return {
-            "inner": self.inner.to_dict(),
-            "participants": list(map(lambda participant: participant.to_dict(), self.participants)),
+            'inner': self.inner.to_dict(),
+            'participants': list(map(lambda participant: participant.to_dict(), self.participants))
         }

@@ -33,15 +33,8 @@ def sormas(world):
     :type world: World
     """
 
-    configuration = sormas_api.Configuration(
-        host="http://localhost:6080/sormas-rest",
-        username="SurvOff",
-        password="SurvOff"
-    )
-    configuration.verify_ssl = False
-    configuration.debug = True
 
-    with sormas_api.ApiClient(configuration) as api_client:
+    with sormas_api.ApiClient(world.sormas_api_config) as api_client:
 
         day: Tick
         for day in world.history:
@@ -74,9 +67,11 @@ def sormas(world):
                 try:
                     participant: EventParticipant
                     for participant in event.participants:
-                        sormas_api.PersonControllerApi(api_client).post_persons(person_dto=[participant.person])
-                        sormas_api.EventParticipantControllerApi(api_client).post_event_participants(
-                            event_participant_dto=[participant.inner]
-                        )
+                        pass
+                        #sormas_api.PersonControllerApi(api_client).post_persons(person_dto=[participant.person])
+                        #sormas_api.EventParticipantControllerApi(api_client).post_event_participants(
+                        #    event_participant_dto=[participant.inner]
+                        #)
+
                 except ApiException as e:
                     print("Exception: %s\n" % e)

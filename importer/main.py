@@ -12,18 +12,19 @@ def main():
 
     # Populate default entities in our world
     # Counties of interest
-    # world.add_district("Braunschweig")
-    # world.add_district("Salzgitter")
-    # world.add_district("Wolfsburg")
-
+    #lower_saxony = 'Niedersachsen'
+    #world.add_region(lower_saxony)
+    #world.add_district('Braunschweig', lower_saxony)
+    #world.add_district('Salzgitter', lower_saxony)
+    #world.add_district('Wolfsburg', lower_saxony)
     # Populate our world with n persons
     # world.pre_populate_susceptible()
     # world.pre_populate_infected()
-    world.pre_populate_cases_and_contacts(n=1)
+    world.pre_populate_cases_and_contacts(n=20)
 
     # world.pre_populate_infection_chains() #todo
     #  ### Geolocations --- todo don't know yet
-    world.pre_populate_events_and_participants(n=1)
+    world.pre_populate_events_and_participants(n=10)
 
     # All set! Now we start the pandemic with patient zero
     # world.patient_zero()

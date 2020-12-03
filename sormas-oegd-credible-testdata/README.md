@@ -1,6 +1,6 @@
 # Generation of credible test data for SORMAS-OEGD
 
-An overview can be found in the presentation [presentation/sormas-oegd-credible-testdata.pdf](presentation/sormas-oegd-credible-testdata.pdf).
+An overview can be found in the presentation [presentation/sormas-oegd-credible-testdata.pdf](../presentation/sormas-oegd-credible-testdata.pdf).
 
 The scripts consists essentially in three parts:
 1. the parameters and functions

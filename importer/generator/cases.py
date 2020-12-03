@@ -1,6 +1,7 @@
-from datetime import datetime, time
+import datetime
+import random
 
-from sormas import CaseDataDto, CaseClassification, InvestigationStatus, CaseReferenceDto
+from sormas import CaseDataDto, CaseReferenceDto, CaseClassification, InvestigationStatus
 
 from generator.district import default_district
 from generator.facility import none_facility_ref
@@ -8,6 +9,8 @@ from generator.person import person_ref
 from generator.region import default_region
 from generator.user import surv_sup_user_ref
 from generator.utils import duuid
+
+random.seed(42)
 
 # todo Begin not 100 % sure what this means
 # County of residence and reporting local health authority are the same with
@@ -90,9 +93,52 @@ def impute_infection_date():
     pass
 
 
-def gen_case_dto(date, p_uuid, disease, symptoms):
+def get_case_classification():
+    return random.choices(
+        # Fixme None should be part of this
+        [
+            CaseClassification.CONFIRMED,
+            CaseClassification.PROBABLE,
+            CaseClassification.SUSPECT,
+            CaseClassification.NO_CASE,
+        ],
+        [
+            0.7,
+            0.1,
+            0.15,
+            0.05
+        ]
+    )[0]
+
+
+def get_investigation_status():
+    return random.choices(
+        # Fixme None should be part of this
+        [
+            InvestigationStatus.PENDING,
+            InvestigationStatus.DONE
+        ],
+        [
+            0.3,
+            0.7
+        ]
+    )[0]
+
+
+def gen_case_dto(date, p_uuid, disease, symptoms, case_classification=None, investigation_status=None,
+                 case_outcome=None,
+                 outcome_date=None):
+    if case_classification is None:
+        case_classification = get_case_classification()
+
+    if investigation_status is None:
+        investigation_status = get_investigation_status()
+
+    if case_outcome is None or outcome_date is None:
+        raise NotImplementedError
+
     # FIXME date needs to be more specified
-    date = datetime.combine(date, time(0, 0, 0))
+    date = datetime.datetime.combine(datetime.date.fromisoformat(date), datetime.time(0, 0, 0))
     case_dto = CaseDataDto(
         uuid=duuid(),
         disease=disease,
@@ -101,13 +147,15 @@ def gen_case_dto(date, p_uuid, disease, symptoms):
         change_date=date,  # FIXME not annotated as required
         creation_date=date,  # FIXME not annotated as required
         reporting_user=surv_sup_user_ref(),
-        case_classification=CaseClassification.CONFIRMED,
-        investigation_status=InvestigationStatus.PENDING,
+        case_classification=case_classification,
+        investigation_status=investigation_status,
         region=default_region(),
         district=default_district(),
         health_facility=none_facility_ref(),  # FIXME not required, somewhat validated but without telling the user
         health_facility_details="Home",  # FIXME not required, somewhat validated but without telling the user
-        symptoms=symptoms
+        symptoms=symptoms,
+        outcome=case_outcome,
+        outcome_date=outcome_date
     )
     return case_dto
 
