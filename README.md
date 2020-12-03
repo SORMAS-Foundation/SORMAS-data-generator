@@ -7,7 +7,6 @@ Goal of this project is to generate and import credible test data into SORMAS. T
 
 # Caveats
 * Very early stage of development, DO NOT CONNECT IT TO A PRODUCTION SYSTEM
-* Only works with SORMAS version 1.49.1 because of this [issue](https://github.com/hzi-braunschweig/SORMAS-Project/issues/3293)
 
 
 # Run it

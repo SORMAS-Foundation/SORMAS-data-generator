@@ -1,4 +1,5 @@
 sormas-rest.yaml
+sormas-rest-fixed.yaml
 out/*
 venv/
 .idea/

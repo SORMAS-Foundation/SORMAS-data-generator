@@ -10,5 +10,6 @@ def gen_event_participant_dto(person_uuid, event_uuid):
         uuid=duuid(), # todo triggers EventParticipantFacadeEjb:174
         person=person_ref(person_uuid),
         event=event_ref(event_uuid)
+        # todo creation date is not required
     )
     return event_participant_dto

@@ -8,12 +8,13 @@ cp "$tmp/deploy/openapi/sormas-rest.yaml" .
 rm -rf "$tmp"
 
 
-sed -i 's/http-basic/basicAuth/g' sormas-rest.yaml
-sed -i 's/[[:space:]]Basic/\ basic/g' sormas-rest.yaml
+#sed -i 's/http-basic/basicAuth/g' sormas-rest.yaml
+#sed -i 's/[[:space:]]Basic/\ basic/g' sormas-rest.yaml
 
+python3 fix_yaml.py
 
 docker run --rm -v "${PWD}:/local" openapitools/openapi-generator-cli generate \
--i local/sormas-rest.yaml \
+-i local/sormas-rest-fixed.yaml \
 -g python \
 -o /local/out \
 --package-name sormas

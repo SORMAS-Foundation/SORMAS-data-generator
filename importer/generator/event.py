@@ -1,6 +1,6 @@
 import random
 
-from sormas import EventDto, EventStatus, EventReferenceDto
+from sormas import EventDto, EventStatus, EventReferenceDto,Disease
 
 from generator.user import surv_sup_user_ref
 from generator.utils import dnow, duuid
@@ -20,11 +20,17 @@ p_known_participant = 0.01  # 0.2 # proportion of participants who are a case
 random.seed(42)
 
 
-def gen_event_dto(event_desc=None, start_date=None):
+def gen_event_dto(event_desc=None, start_date=None, location=None,disease= None):
     if event_desc is None:
         raise NotImplementedError
 
     if start_date is None:
+        raise NotImplementedError
+
+    if location is None:
+        raise NotImplementedError
+
+    if disease is None:
         raise NotImplementedError
 
     event_dto = EventDto(
@@ -34,6 +40,8 @@ def gen_event_dto(event_desc=None, start_date=None):
         report_date_time=dnow(),
         reporting_user=surv_sup_user_ref(),
         start_date=start_date,
+        event_location=location,
+        disease=Disease.CORONAVIRUS
         # todo region + district is required in the UI!
     )
     return event_dto
