@@ -1,0 +1,4 @@
+out/
+venv/
+sormas-rest-*.yaml
+Dockerfile

@@ -5,5 +5,5 @@ with open('sormas-rest.yaml') as f:
     data['components']['securitySchemes'] = {'basicAuth': {'type': 'http', 'scheme': 'basic'}}
     data['security'] = [{'basicAuth': []}]
     with open('sormas-rest-fixed.yaml', 'w') as w:
-        yaml.dump(data,w)
+        yaml.dump(data, w)
     pass

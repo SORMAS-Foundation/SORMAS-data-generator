@@ -1,14 +1,14 @@
-version: '2.3'
+version: '3.4'
 services:
   sormas:
     restart: unless-stopped
-    labels:
-      - autoheal=true
-      # override for stop timeout seconds during restart
-      - autoheal.stop.timeout=30
     links:
       - postgres
     image: hzibraunschweig/sormas-application:${SORMAS_DOCKER_VERSION}
+    ports:
+      - '6080:6080'
+      - '6081:6081'
+      - '6049:6049'
     environment:
       - SORMAS_POSTGRES_USER=${SORMAS_POSTGRES_USER}
       - SORMAS_POSTGRES_PASSWORD=${SORMAS_POSTGRES_PASSWORD}
@@ -57,17 +57,12 @@ services:
       timeout: 7s
       retries: 3
       start_period: 300s
-    ports:
-      - "6080:6080"
-
     depends_on:
       postgres:
         condition: service_healthy
 
   postgres:
     restart: unless-stopped
-    labels:
-      - autoheal=true
     command: -c 'config_file=/etc/postgresql/postgresql.conf'
     image: hzibraunschweig/sormas-postgres:${SORMAS_DOCKER_VERSION}
     environment:
@@ -90,6 +85,14 @@ services:
       retries: 3
       start_period: 30s
 
-
-
-
+  data-gen:
+    build:
+      context: src/
+      args:
+        - SORMAS_VERSION=${SORMAS_VERSION}
+        - OPENAPI_GENERATOR_VERSION=${OPENAPI_GENERATOR_VERSION}
+    environment:
+      - DB_HOST=${DB_HOST}
+    depends_on:
+      sormas:
+        condition: service_healthy

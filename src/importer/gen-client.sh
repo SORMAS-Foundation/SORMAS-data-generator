@@ -1,32 +1,56 @@
 #!/bin/bash
-source ../.env
+set -e
+
+if [[ -z "${DOCKERIZED}" ]]; then
+  source ../../.env
+fi
+
 tmp=$(mktemp -d)
-echo $tmp
 wget "https://github.com/hzi-braunschweig/SORMAS-Project/releases/download/v${SORMAS_VERSION}/sormas_${SORMAS_VERSION}.zip" -P "$tmp"
 unzip "$tmp/sormas_${SORMAS_VERSION}.zip" -d "$tmp"
 cp "$tmp/deploy/openapi/sormas-rest.yaml" .
 rm -rf "$tmp"
 
+# use docker if we run on the host for development
+if [[ -z "${DOCKERIZED}" ]]; then
+  # https://github.com/hzi-braunschweig/SORMAS-Project/issues/3293
+  python3 fix_yaml.py
+  docker run --rm -v "${PWD}:/local" "openapitools/openapi-generator-cli:v${OPENAPI_GENERATOR_VERSION}" generate \
+    -i local/sormas-rest-fixed.yaml \
+    -g python \
+    -o /local/out \
+    --package-name sormas
 
-#sed -i 's/http-basic/basicAuth/g' sormas-rest.yaml
-#sed -i 's/[[:space:]]Basic/\ basic/g' sormas-rest.yaml
+  sudo chown -R $USER:$USER out
+  PIP_REQ_PATH=requirements.txt
 
-python3 fix_yaml.py
+else
+  # https://github.com/hzi-braunschweig/SORMAS-Project/issues/3293
+  python3 importer/fix_yaml.py
 
-docker run --rm -v "${PWD}:/local" openapitools/openapi-generator-cli generate \
--i local/sormas-rest-fixed.yaml \
--g python \
--o /local/out \
---package-name sormas
+  # https://github.com/OpenAPITools/openapi-generator#launcher-script
+  mkdir -p ~/bin/openapitools
+  curl https://raw.githubusercontent.com/OpenAPITools/openapi-generator/master/bin/utils/openapi-generator-cli.sh > ~/bin/openapitools/openapi-generator-cli
+  chmod u+x ~/bin/openapitools/openapi-generator-cli
+  export PATH=$PATH:~/bin/openapitools/
 
-sudo chown -R $USER:$USER out
+  openapi-generator-cli generate \
+    -i sormas-rest-fixed.yaml \
+    -g python \
+    -o out \
+    --package-name sormas
+
+  PIP_REQ_PATH=importer/requirements.txt
+
+fi
 
 python3 -m venv venv
 source ./venv/bin/activate
+pip3 install --upgrade wheel && pip3 install --upgrade setuptools
 
-pip install -r requirements.txt
+pip3 install -r $PIP_REQ_PATH
 
 pushd out || exit
-python3 setup.py install --record files.txt
+pip3 install .
 popd || exit
 

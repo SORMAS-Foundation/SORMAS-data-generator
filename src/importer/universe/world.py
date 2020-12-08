@@ -1,3 +1,4 @@
+import os
 import random
 from datetime import timedelta
 
@@ -30,11 +31,11 @@ class World:
         self.today = Tick(beginning)
         self.history = list()
         self.model = self._load_model()
-
+        host = 'sormas' if os.environ.get('DOCKERIZED') else 'localhost'
         configuration = sormas_api.Configuration(
-            host="http://localhost:6080/sormas-rest",
-            username="SurvOff",
-            password="SurvOff"
+            host=f'http://{host}:6080/sormas-rest',
+            username='SurvOff',
+            password='SurvOff'
         )
         configuration.verify_ssl = False
         configuration.debug = True
