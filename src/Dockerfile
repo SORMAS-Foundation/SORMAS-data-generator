@@ -1,5 +1,6 @@
 FROM debian:buster-slim
 ARG SORMAS_VERSION
+ARG OPENAPI_GENERATOR_VERSION
 ENV DOCKERIZED=true
 
 # see https://github.com/debuerreotype/debuerreotype/issues/10
@@ -18,8 +19,6 @@ RUN pip3 install -U PyYAML
 WORKDIR /srv/
 COPY . /srv/
 
-
-ARG OPENAPI_GENERATOR_VERSION
 RUN ./importer/gen-client.sh
 COPY config/setup_and_run.sh setup_and_run.sh
 
