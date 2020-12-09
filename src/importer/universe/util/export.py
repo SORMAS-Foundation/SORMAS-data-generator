@@ -33,7 +33,6 @@ def sormas(world):
     :type world: World
     """
 
-
     with sormas_api.ApiClient(world.sormas_api_config) as api_client:
 
         day: Tick
@@ -68,10 +67,11 @@ def sormas(world):
                     participant: EventParticipant
                     for participant in event.participants:
                         pass
-                        #sormas_api.PersonControllerApi(api_client).post_persons(person_dto=[participant.person])
-                        #sormas_api.EventParticipantControllerApi(api_client).post_event_participants(
+                        # sormas_api.PersonControllerApi(api_client).post_persons(person_dto=[participant.person])
+                        # sormas_api.EventParticipantControllerApi(api_client).post_event_participants(
                         #    event_participant_dto=[participant.inner]
-                        #)
+                        # )
 
                 except ApiException as e:
                     print("Exception: %s\n" % e)
+    print('DONE!')
