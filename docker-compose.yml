@@ -8,7 +8,7 @@ services:
     ports:
       - '6080:6080'
       - '6081:6081'
-      - '6049:6049'
+      - '6048:6048'
     environment:
       - SORMAS_POSTGRES_USER=${SORMAS_POSTGRES_USER}
       - SORMAS_POSTGRES_PASSWORD=${SORMAS_POSTGRES_PASSWORD}
