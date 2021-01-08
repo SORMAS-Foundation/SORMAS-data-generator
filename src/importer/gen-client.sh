@@ -11,6 +11,11 @@ unzip "$tmp/sormas_${SORMAS_VERSION}.zip" -d "$tmp"
 cp "$tmp/deploy/openapi/sormas-rest.yaml" .
 rm -rf "$tmp"
 
+
+python3 -m venv venv
+source ./venv/bin/activate
+pip3 install --upgrade wheel setuptools yaml
+
 # use docker if we run on the host for development
 if [[ -z "${DOCKERIZED}" ]]; then
   # https://github.com/hzi-braunschweig/SORMAS-Project/issues/3293
@@ -44,9 +49,7 @@ else
 
 fi
 
-python3 -m venv venv
-source ./venv/bin/activate
-pip3 install --upgrade wheel && pip3 install --upgrade setuptools
+
 
 pip3 install -r $PIP_REQ_PATH
 
