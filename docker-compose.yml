@@ -93,6 +93,8 @@ services:
         - OPENAPI_GENERATOR_VERSION=${OPENAPI_GENERATOR_VERSION}
     environment:
       - DB_HOST=${DB_HOST}
+      - CASE_COUNT=${CASE_COUNT}
+      - EVENT_COUNT=${EVENT_COUNT}
     depends_on:
       sormas:
         condition: service_healthy

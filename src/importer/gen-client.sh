@@ -14,7 +14,7 @@ rm -rf "$tmp"
 
 python3 -m venv venv
 source ./venv/bin/activate
-pip3 install --upgrade wheel setuptools yaml
+pip3 install --upgrade wheel setuptools pyyaml
 
 # use docker if we run on the host for development
 if [[ -z "${DOCKERIZED}" ]]; then

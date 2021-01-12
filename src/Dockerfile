@@ -15,12 +15,16 @@ RUN apt install -y \
 # FIXME Debian repo version is to old
 RUN pip3 install -U PyYAML
 
+# todo add caching
 
-WORKDIR /srv/
-COPY . /srv/
+WORKDIR /srv
 
-RUN ./importer/gen-client.sh
 COPY config/setup_and_run.sh setup_and_run.sh
+COPY importer/fix_yaml.py /srv/importer/
+COPY importer/gen-client.sh /srv/importer/
+COPY importer/requirements.txt /srv/importer/
+RUN  importer/gen-client.sh
 
+COPY . /srv
 CMD ["./setup_and_run.sh"]
 

@@ -2,4 +2,4 @@
 source venv/bin/activate
 echo "Starting import"
 cd importer || exit
-python3 main.py
+python3 main.py --case-count $CASE_COUNT --event-count $EVENT_COUNT
