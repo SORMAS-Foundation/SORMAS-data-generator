@@ -11,7 +11,7 @@ To start a complete test stack run `docker-compose up -d --build --force-recreat
 generator/importer will run. After its work is completed, it shuts down automatically.
 
 Third option of running this project is to first build (`$src/ docker build -t local-sormas/data-gen .`)
-and run it with  `docker run --network=host -e CASE_COUNT=10 -e EVENT_COUNT=5 sormas-data-generator_data-gen`.
+and run it with  `docker run --network=host -e CASE_COUNT=10 -e EVENT_COUNT=5 data-gen`.
 Check `docker-compose.yml` to see what other env variables (like `DB_HOST`) can be passed.
 
 
