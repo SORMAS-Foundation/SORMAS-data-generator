@@ -1,14 +1,22 @@
+import logging
 from datetime import date
 
 import click
 
 from universe.world import World
 
+logging.basicConfig(
+    level=logging.DEBUG,
+    format='%(asctime)s %(name)s.%(funcName)s +%(lineno)s: %(levelname)-8s [%(process)d] %(message)s',
+)
+
 
 @click.command()
 @click.option('--case-count', default=3, help='Number of cases you want to import.')
 @click.option('--event-count', default=2, help='Number of events you want to import.')
 def main(case_count, event_count):
+    logging.info(f'Importing {case_count} cases')
+    logging.info(f'Importing {event_count} events')
     # Set everything up
     # Create our world where we simulate a pandemic. This is our playground.
     # Set a beginning for our world

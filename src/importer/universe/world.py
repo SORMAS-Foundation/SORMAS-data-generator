@@ -1,7 +1,7 @@
 import os
 import random
 from datetime import timedelta
-
+import logging
 import numpy as np
 import pandas as pd
 import sormas as sormas_api
@@ -31,12 +31,16 @@ class World:
         self.today = Tick(beginning)
         self.history = list()
         self.model = self._load_model()
-        host = 'sormas' if os.environ.get('DOCKERIZED') else 'localhost'
+        sormas_domain = os.environ.get("DOMAIN_NAME")
+        logging.info(f'SORMAS domain: {sormas_domain}')
+        host = sormas_domain if sormas_domain else 'localhost'
+
         configuration = sormas_api.Configuration(
             host=f'http://{host}:6080/sormas-rest',
             username='SurvOff',
             password='SurvOff'
         )
+
         configuration.verify_ssl = False
         configuration.debug = True
         self.sormas_api_config = configuration
@@ -143,7 +147,7 @@ class World:
             for symptom in s.split(','):
                 tmp = _map.get(symptom)
                 if tmp is None:
-                    print(symptom + ' is not mapped')
+                    logging.error(symptom + ' is not mapped')
                     continue
                 res[tmp] = SymptomState.YES
             return res

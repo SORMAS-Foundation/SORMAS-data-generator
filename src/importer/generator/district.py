@@ -1,4 +1,5 @@
 import datetime
+import logging
 from itertools import chain
 
 from sormas import DistrictReferenceDto
@@ -24,7 +25,7 @@ def insert_district(district, region_id):
             cur.execute("SELECT uuid FROM district WHERE name=%s", [district])
             exists = cur.fetchone()[0]
             if exists:
-                print(f'{district} already exists in the DB')
+                logging.info(f'{district} already exists in the DB')
                 return exists
 
             cur.execute("SELECT id FROM district")

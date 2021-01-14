@@ -89,10 +89,12 @@ services:
     build:
       context: src/
       args:
+        - DOCKERIZED=true
         - SORMAS_VERSION=${SORMAS_VERSION}
         - OPENAPI_GENERATOR_VERSION=${OPENAPI_GENERATOR_VERSION}
     environment:
       - DB_HOST=${DB_HOST}
+      - DOMAIN_NAME=${DOMAIN_NAME}
       - CASE_COUNT=${CASE_COUNT}
       - EVENT_COUNT=${EVENT_COUNT}
     depends_on:

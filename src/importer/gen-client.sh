@@ -14,6 +14,7 @@ rm -rf "$tmp"
 
 python3 -m venv venv
 source ./venv/bin/activate
+# FIXME Debian repo version is to old
 pip3 install --upgrade wheel setuptools pyyaml
 
 # use docker if we run on the host for development
