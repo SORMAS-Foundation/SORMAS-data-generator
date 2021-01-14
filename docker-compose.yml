@@ -89,7 +89,7 @@ services:
     build:
       context: src/
       args:
-        - DOCKERIZED=true
+        - DOCKERIZED=false
         - SORMAS_VERSION=${SORMAS_VERSION}
         - OPENAPI_GENERATOR_VERSION=${OPENAPI_GENERATOR_VERSION}
     environment:
