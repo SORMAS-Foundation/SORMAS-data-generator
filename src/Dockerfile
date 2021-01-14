@@ -5,7 +5,7 @@ ARG DOCKERIZED=true
 # see https://github.com/debuerreotype/debuerreotype/issues/10
 RUN mkdir -p /usr/share/man/man1
 RUN apt update && apt upgrade -y
-RUN apt install -y \
+RUN apt install --no-install-recommends -y \
     curl wget unzip vim \
     python3 python3-pip python3-venv  \
     maven jq \
