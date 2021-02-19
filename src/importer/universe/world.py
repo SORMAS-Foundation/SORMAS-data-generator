@@ -52,10 +52,12 @@ class World:
             with conn.cursor() as cur:
                 cur.execute("SELECT name, uuid FROM region")
                 res = cur.fetchone()
+                logging.info(f'Region: {res}')
                 self.regions[res[0]] = res[1]
                 cur.execute("SELECT name, uuid FROM district")
                 res = cur.fetchone()
                 self.districts[res[0]] = res[1]
+                logging.info(f'District: {res}')
 
                 # disable other diseases
                 cur.execute("UPDATE diseaseconfiguration SET active = true WHERE disease = 'CORONAVIRUS'")

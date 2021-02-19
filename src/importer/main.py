@@ -25,11 +25,11 @@ def main(case_count, event_count):
 
     # Populate default entities in our world
     # Counties of interest
-    # lower_saxony = 'Niedersachsen'
-    # world.add_region(lower_saxony)
-    # world.add_district('Braunschweig', lower_saxony)
-    # world.add_district('Salzgitter', lower_saxony)
-    # world.add_district('Wolfsburg', lower_saxony)
+    lower_saxony = 'Niedersachsen'
+    world.add_region(lower_saxony)
+    world.add_district('Braunschweig', lower_saxony)
+    world.add_district('Salzgitter', lower_saxony)
+    world.add_district('Wolfsburg', lower_saxony)
     # Populate our world with n persons
     # world.pre_populate_susceptible()
     # world.pre_populate_infected()

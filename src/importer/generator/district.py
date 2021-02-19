@@ -20,13 +20,14 @@ def district_ref(uuid):
 
 
 def insert_district(district, region_id):
+    logging.info(f'Inserting district {district} in region {region_id}')
     with sormas_db_connect() as conn:
         with conn.cursor() as cur:
-            cur.execute("SELECT uuid FROM district WHERE name=%s", [district])
-            exists = cur.fetchone()[0]
+            cur.execute("SELECT id FROM district WHERE name=%s", [district])
+            exists = cur.fetchone()
             if exists:
-                logging.info(f'{district} already exists in the DB')
-                return exists
+                logging.info(f'{district} already exists in the DB, value was {exists}')
+                return exists[0]
 
             cur.execute("SELECT id FROM district")
             all_ids = list(chain.from_iterable(cur.fetchall()))
@@ -37,4 +38,4 @@ def insert_district(district, region_id):
                         "VALUES (%s,%s, %s, %s, %s, %s, %s, %s)",
                         [_id, date, date, district, uuid, region_id, 'DIS', False])
 
-            return uuid
+            return _id
