@@ -67,8 +67,8 @@ services:
     image: hzibraunschweig/sormas-postgres:${SORMAS_DOCKER_VERSION}
     environment:
       - POSTGRES_PASSWORD=${SORMAS_POSTGRES_PASSWORD}
-      - DB_NAME=${DB_NAME}
-      - DB_NAME_AUDIT=${DB_NAME_AUDIT}
+      - DB_NAME=sormas
+      - DB_NAME_AUDIT=sormas_audit
       - SORMAS_POSTGRES_PASSWORD=${SORMAS_POSTGRES_PASSWORD}
       - SORMAS_POSTGRES_USER=${SORMAS_POSTGRES_USER}
       - TZ=${TZ}
