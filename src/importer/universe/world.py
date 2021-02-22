@@ -1,7 +1,6 @@
 import logging
 import os
 import random
-from datetime import timedelta
 
 import numpy as np
 import pandas as pd
@@ -20,7 +19,6 @@ from universe.case import Case
 from universe.contact import Contact
 from universe.event import Event
 from universe.event_participant import EventParticipant
-from universe.infected import Infected
 from universe.tick import Tick
 from universe.util import export
 
@@ -30,7 +28,7 @@ random.seed(42)
 class World:
     def __init__(self, beginning):
         self.today = Tick(beginning)
-        self.history = list()
+        self.history = None
         self.model = self._load_model()
         sormas_domain = os.environ.get("DOMAIN_NAME")
         logging.info(f'SORMAS domain: {sormas_domain}')
@@ -68,7 +66,8 @@ class World:
                 cur.execute("UPDATE diseaseconfiguration SET active = true WHERE disease = 'CORONAVIRUS'")
                 cur.execute("UPDATE diseaseconfiguration SET active = false WHERE disease != 'CORONAVIRUS'")
 
-    def _load_model(self):
+    @staticmethod
+    def _load_model():
         path = "../generator/data/out/"
 
         persons = pd.read_csv(path + "persons_df.csv")
@@ -133,17 +132,6 @@ class World:
         self.districts[district]['id'] = district_id
         self.districts[district]['uuid'] = district_uuid
 
-    def pre_populate_susceptible(self, n=5):
-        for _ in range(n):
-            p = gen_person_dto()
-            self.today.susceptible.append(p)
-
-    def pre_populate_infected(self, n=5):
-        for _ in range(n):
-            person = gen_person_dto()
-            case = Infected(person, Disease.CORONAVIRUS)
-            self.today.infected.append(case)
-
     # todo Create individual cases that reproduce the
     #  aggregated data from covid dashboard and SurvStat
     def pre_populate_cases_and_contacts(self, n=5):
@@ -157,7 +145,7 @@ class World:
             for symptom in s.split(','):
                 tmp = _map.get(symptom)
                 if tmp is None:
-                    logging.error(symptom + ' is not mapped')
+                    logging.info(symptom + ' is not mapped')
                     continue
                 res[tmp] = SymptomState.YES
             return res
@@ -222,62 +210,8 @@ class World:
     def pre_populate_infection_chains(self):
         raise NotImplementedError
 
-    def start(self, disease=Disease.CORONAVIRUS):
-        # todo needs rework regardin simuate and tick
-        patient_zero = self.today.susceptible.pop()
-        case_zero = Case(self.today.date, patient_zero, disease)
-        self.today.infected.append(case_zero)
-        # make the first tick
-
-        today: Tick = self.today
-        self.history.append(today)
-        self.today = Tick(
-            today.date + timedelta(days=1),
-            susceptible=today.susceptible,
-            infected=today.infected,
-            removed=today.removed
-        )
-
-    def stop(self):
-        self.history.append(self.today)
-
-    def simulate(self, ticks=3):
-        """
-        Simulate the spread of the disease.
-        :param ticks: For how many days the simulation should run.
-        """
-        for _ in range(ticks):
-            self._tick()
-
     def export_sormas(self):
         export.sormas(self)
 
     def export_json(self):
         export.json(self)
-
-    def _new_day(self):
-        pass
-
-    def _tick(self):
-        """
-        Make one day pass. Take the current state and evolve based on the predefined statistical values.
-        """
-
-        self.history.append(self.today)
-
-        tomorrow = self.today
-        tomorrow.date = self.today.date + timedelta(days=1)
-        self.today = tomorrow
-        # right now one person infects exactly one other persons and is removed
-        # this will of course be changed to the correct values extracted from the live date
-
-        today = self.today
-
-        while today.cases:
-            # get an infected person
-            source_case = today.cases.pop()
-
-            susceptible = today.susceptible.pop()
-            new_case = Case(today.date, susceptible, source_case.disease())
-            today.cases.append(new_case)
-            today.removed.append(source_case)

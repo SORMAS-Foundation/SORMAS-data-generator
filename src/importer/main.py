@@ -1,12 +1,15 @@
 import logging
+import os
 from datetime import date
 
 import click
 
 from universe.world import World
 
+LOGLEVEL = os.environ.get('LOGLEVEL', 'DEBUG').upper()
+
 logging.basicConfig(
-    level=logging.DEBUG,
+    level=LOGLEVEL,
     format='%(asctime)s %(name)s.%(funcName)s +%(lineno)s: %(levelname)-8s [%(process)d] %(message)s',
 )
 
@@ -30,21 +33,12 @@ def main(case_count, event_count):
     world.add_district('Braunschweig', lower_saxony)
     world.add_district('Salzgitter', lower_saxony)
     world.add_district('Wolfsburg', lower_saxony)
-    # Populate our world with n persons
-    # world.pre_populate_susceptible()
-    # world.pre_populate_infected()
+
     world.pre_populate_cases_and_contacts(n=case_count)
 
     # world.pre_populate_infection_chains() #todo
     #  ### Geolocations --- todo don't know yet
     world.pre_populate_events_and_participants(n=event_count)
-
-    # All set! Now we start the pandemic with patient zero
-    # world.patient_zero()
-    # Now we let run the simulation for 5 ticks
-    # world.simulate(ticks=3)
-
-    world.stop()
 
     # Great, now store the world's case history in SORMAS/JSON/CSV etc
     world.export_sormas()
