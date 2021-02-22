@@ -1,7 +1,8 @@
+import logging
 import os
 import random
 from datetime import timedelta
-import logging
+
 import numpy as np
 import pandas as pd
 import sormas as sormas_api
@@ -50,13 +51,17 @@ class World:
 
         with sormas_db_connect() as conn:
             with conn.cursor() as cur:
-                cur.execute("SELECT name, uuid FROM region")
+                cur.execute("SELECT name, id, uuid FROM region")
                 res = cur.fetchone()
                 logging.info(f'Region: {res}')
-                self.regions[res[0]] = res[1]
-                cur.execute("SELECT name, uuid FROM district")
+                self.regions[res[0]] = {}
+                self.regions[res[0]]['id'] = res[1]
+                self.regions[res[0]]['uuid'] = res[2]
+                cur.execute("SELECT name, id, uuid FROM district")
                 res = cur.fetchone()
-                self.districts[res[0]] = res[1]
+                self.districts[res[0]] = {}
+                self.districts[res[0]]['id'] = res[1]
+                self.districts[res[0]]['uuid'] = res[2]
                 logging.info(f'District: {res}')
 
                 # disable other diseases
@@ -101,8 +106,8 @@ class World:
         lon = 0 if np.isnan(pers.longitude) else pers.longitude  # Fixme 0 condition
         location_dto = gen_location_dto(
             lat, lon,
-            region_ref(self.regions['Voreingestellte Bundesländer']),
-            self.districts['Voreingestellter Landkreis']
+            region_ref(self.regions['Voreingestellte Bundesländer']['uuid']),
+            self.districts['Voreingestellter Landkreis']['uuid']
         )
         person = gen_person_dto(
             first_name=pers.first_name,
@@ -117,13 +122,16 @@ class World:
         return person
 
     def add_region(self, region):
-        region_id = insert_region(region)
-        self.regions[region] = region_id
+        region_id, region_uuid = insert_region(region)
+        self.regions[region] = {}
+        self.regions[region]['id'] = region_id
 
     def add_district(self, district, region):
-        region_id = self.regions[region]
-        district_id = insert_district(district, region_id)
-        self.districts[district] = district_id
+        region_id = self.regions[region]['id']
+        district_id, district_uuid = insert_district(district, region_id)
+        self.districts[district] = {}
+        self.districts[district]['id'] = district_id
+        self.districts[district]['uuid'] = district_uuid
 
     def pre_populate_susceptible(self, n=5):
         for _ in range(n):
@@ -196,8 +204,8 @@ class World:
             location_dto = gen_location_dto(
                 m_event.latitude,
                 m_event.longitude,
-                region_ref(self.regions['Voreingestellte Bundesländer']),
-                self.districts['Voreingestellter Landkreis']  # m_event.address]
+                region_ref(self.regions['Voreingestellte Bundesländer']['uuid']),
+                self.districts['Voreingestellter Landkreis']['uuid']  # m_event.address]
             )
             # FIXME use the real place
             event_dto = gen_event_dto(event_desc, start_date, location_dto, Disease.CORONAVIRUS)

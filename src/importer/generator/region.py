@@ -16,18 +16,18 @@ def default_region():
 
 
 def region_ref(uuid):
-    return RegionReferenceDto(uuid)
+    return RegionReferenceDto(uuid=uuid)
 
 
 def insert_region(region):
     logging.info(f'Inserting region {region}')
     with sormas_db_connect() as conn:
         with conn.cursor() as cur:
-            cur.execute("SELECT id FROM region WHERE name=%s", [region])
+            cur.execute("SELECT id, uuid FROM region WHERE name=%s", [region])
             exists = cur.fetchone()
             if exists:
                 logging.info(f'{region} already exists in the DB, value was {exists}')
-                return exists[0]
+                return exists[0], exists[1]
             cur.execute("SELECT id FROM region")
             all_ids = list(chain.from_iterable(cur.fetchall()))
             _id = max(all_ids) + 1
@@ -37,4 +37,4 @@ def insert_region(region):
                         "VALUES (%s,%s, %s, %s, %s, %s, %s)",
                         [_id, date, date, region, uuid, 'REG', False]
                         )
-            return _id
+            return _id, uuid
