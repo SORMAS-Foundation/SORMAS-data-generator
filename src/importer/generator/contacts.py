@@ -62,7 +62,8 @@ def gen_contact_dto(person_uuid, case_uuid, disease):
         last_contact_date=datetime.date.fromisoformat('2020-02-01'),
         disease=disease,
         caze=case_ref(case_uuid),  # todo validation exception talking about region
-        health_conditions=gen_health_condition_dto()  # todo ContactFacadeRjb:1092 nullpointer if missing
+        health_conditions=gen_health_condition_dto(),  # todo ContactFacadeRjb:1092 nullpointer if missing
         # todo contact classifaction is required in UI
+        multi_day_contact=False  # todo check required
     )
     return contact_dto
