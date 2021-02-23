@@ -15,7 +15,7 @@ WORKDIR /srv
 
 COPY config/setup_and_run.sh setup_and_run.sh
 COPY importer/gen-client.sh /srv/importer/
-COPY importer/requirements.txt /srv/importer/
+COPY config/requirements.txt /srv/importer/
 RUN  importer/gen-client.sh
 COPY . /srv
 CMD ["./setup_and_run.sh"]
