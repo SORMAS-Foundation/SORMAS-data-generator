@@ -9,41 +9,8 @@ services:
       - '6080:6080'
       - '6081:6081'
       - '6048:6048'
-    environment:
-      - SORMAS_POSTGRES_USER=${SORMAS_POSTGRES_USER}
-      - SORMAS_POSTGRES_PASSWORD=${SORMAS_POSTGRES_PASSWORD}
-      - SORMAS_SERVER_URL=${SORMAS_SERVER_URL}
-      - DB_HOST=${DB_HOST}
-      - DOMAIN_NAME=${DOMAIN_NAME}
-      - DB_JDBC_MAXPOOLSIZE=${DB_JDBC_MAXPOOLSIZE}
-      - DB_NAME=${DB_NAME}
-      - DB_NAME_AUDIT=${DB_NAME_AUDIT}
-      - MAIL_HOST=${MAIL_HOST}
-      - MAIL_FROM=${MAIL_FROM}
-      - SORMAS_VERSION=${SORMAS_VERSION}
-      - LOCALE=${LOCALE}
-      - EPIDPREFIX=${EPIDPREFIX}
-      - SEPARATOR=${SEPARATOR}
-      - EMAIL_SENDER_ADDRESS=${EMAIL_SENDER_ADDRESS}
-      - EMAIL_SENDER_NAME=${EMAIL_SENDER_NAME}
-      - LATITUDE=${LATITUDE}
-      - LONGITUDE=${LONGITUDE}
-      - MAP_ZOOM=${MAP_ZOOM}
-      - TZ=${TZ}
-      - JVM_MAX=${APPSERVER_JVM_MAX}
-      - GEO_UUID=${GEO_UUID}
-      - DEVMODE=${DEVMODE}
-      - JSON_LOGGING=${JSON_LOGGING}
-      - CUSTOMBRANDING_ENABLED=${CUSTOMBRANDING_ENABLED}
-      - CUSTOMBRANDING_NAME=${CUSTOMBRANDING_NAME}
-      - CUSTOMBRANDING_LOGO_PATH=${CUSTOMBRANDING_LOGO_PATH}
-      - CUSTOMBRANDING_USE_LOGINSIDEBAR=${CUSTOMBRANDING_USE_LOGINSIDEBAR}
-      - CUSTOMBRANDING_LOGINBACKGROUND_PATH=${CUSTOMBRANDING_LOGINBACKGROUND_PATH}
-      - GEO_TEMPLATE=${GEO_TEMPLATE}
-      - GEO_LONG_TEMPLATE=${GEO_LONG_TEMPLATE}
-      - GEO_LAT_TEMPLATE=${GEO_LAT_TEMPLATE}
-      - CASEARCHIVEDAYS=${CASEARCHIVEDAYS}
-      - EVENTARCHIVEDAYS=${EVENTARCHIVEDAYS}
+    env_file:
+      - ./.env
     volumes:
       - ${SORMAS_PATH}/documents:/opt/sormas/documents
       - ${SORMAS_PATH}/custom:/opt/sormas/custom
@@ -65,13 +32,8 @@ services:
     restart: unless-stopped
     command: -c 'config_file=/etc/postgresql/postgresql.conf'
     image: hzibraunschweig/sormas-postgres:${SORMAS_DOCKER_VERSION}
-    environment:
-      - POSTGRES_PASSWORD=${SORMAS_POSTGRES_PASSWORD}
-      - DB_NAME=${DB_NAME}
-      - DB_NAME_AUDIT=${DB_NAME_AUDIT}
-      - SORMAS_POSTGRES_PASSWORD=${SORMAS_POSTGRES_PASSWORD}
-      - SORMAS_POSTGRES_USER=${SORMAS_POSTGRES_USER}
-      - TZ=${TZ}
+    env_file:
+      - ./.env
     volumes:
       - ${SORMAS_PATH}/psqldata:/var/lib/postgresql/data
     ports:
@@ -92,11 +54,9 @@ services:
         - DOCKERIZED=false
         - SORMAS_VERSION=${SORMAS_VERSION}
         - OPENAPI_GENERATOR_VERSION=${OPENAPI_GENERATOR_VERSION}
-    environment:
-      - DB_HOST=${DB_HOST}
-      - DOMAIN_NAME=${DOMAIN_NAME}
-      - CASE_COUNT=${CASE_COUNT}
-      - EVENT_COUNT=${EVENT_COUNT}
+        - PERFORMANCE_LOG_DIR=${PERFORMANCE_LOG_DIR}
+    env_file:
+      - ./.env
     depends_on:
       sormas:
         condition: service_healthy

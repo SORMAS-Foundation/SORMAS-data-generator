@@ -12,7 +12,7 @@ RUN apt install --no-install-recommends -y \
     postgresql libpq-dev
 
 WORKDIR /srv
-
+RUN mkdir $PERFORMANCE_LOG_DIR
 COPY config/setup_and_run.sh setup_and_run.sh
 COPY importer/gen-client.sh /srv/importer/
 COPY config/requirements.txt /srv/importer/

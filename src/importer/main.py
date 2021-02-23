@@ -6,28 +6,22 @@ import click
 
 from universe.world import World
 
-LOGLEVEL = os.environ.get('LOGLEVEL', 'DEBUG').upper()
-
-logFormatter = logging.Formatter(
-    '%(asctime)s %(name)s.%(funcName)s %(message)s'
+# noinspection PyArgumentList
+logging.basicConfig(
+    level=os.environ.get('LOGLEVEL', 'DEBUG').upper(),
+    format='%(asctime)s %(name)s.%(funcName)s %(message)s',
+    handlers=[
+        logging.FileHandler(os.environ.get('PERFORMANCE_LOG_DIR', f'../../timings/{int(time.time())}.log')),
+        logging.StreamHandler()
+    ]
 )
-
-rootLogger = logging.getLogger()
-rootLogger.setLevel(LOGLEVEL)
-
-fileHandler = logging.FileHandler(f'../../timings/{int(time.time())}.log')
-fileHandler.setFormatter(logFormatter)
-rootLogger.addHandler(fileHandler)
-
-consoleHandler = logging.StreamHandler()
-consoleHandler.setFormatter(logFormatter)
-rootLogger.addHandler(consoleHandler)
 
 
 @click.command()
 @click.option('--case-count', default=3, help='Number of cases you want to import.')
 @click.option('--event-count', default=2, help='Number of events you want to import.')
-def main(case_count, event_count):
+@click.option('--record-performance', default=False, help='Record timing information.')
+def main(case_count, event_count, record_performance):
     logging.info(f'Importing {case_count} cases')
     logging.info(f'Importing {event_count} events')
     # Set everything up
