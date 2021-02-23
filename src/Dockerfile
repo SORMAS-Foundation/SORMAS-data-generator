@@ -2,6 +2,7 @@ FROM debian:buster-slim
 ARG SORMAS_VERSION
 ARG OPENAPI_GENERATOR_VERSION
 ARG DOCKERIZED=false
+ARG PERFORMANCE_LOG_DIR
 # see https://github.com/debuerreotype/debuerreotype/issues/10
 RUN mkdir -p /usr/share/man/man1
 RUN apt update && apt upgrade -y
