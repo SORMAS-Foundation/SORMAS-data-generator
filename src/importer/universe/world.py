@@ -26,12 +26,10 @@ random.seed(42)
 
 
 class World:
-    def __init__(self, beginning):
-        self.today = Tick(beginning)
-        self.history = None
+    def __init__(self):
+        self.today = Tick()
         self.model = self._load_model()
         sormas_domain = os.environ.get("DOMAIN_NAME")
-        logging.info(f'SORMAS domain: {sormas_domain}')
         host = sormas_domain if sormas_domain else 'localhost'
 
         configuration = sormas_api.Configuration(
@@ -211,7 +209,7 @@ class World:
         raise NotImplementedError
 
     def export_sormas(self):
-        export.sormas(self)
+        export.sormas_export(self)
 
     def export_json(self):
-        export.json(self)
+        export.json_export(self)

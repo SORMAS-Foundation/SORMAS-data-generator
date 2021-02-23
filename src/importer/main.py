@@ -1,6 +1,6 @@
 import logging
 import os
-from datetime import date
+import time
 
 import click
 
@@ -8,10 +8,20 @@ from universe.world import World
 
 LOGLEVEL = os.environ.get('LOGLEVEL', 'DEBUG').upper()
 
-logging.basicConfig(
-    level=LOGLEVEL,
-    format='%(asctime)s %(name)s.%(funcName)s +%(lineno)s: %(levelname)-8s [%(process)d] %(message)s',
+logFormatter = logging.Formatter(
+    '%(asctime)s %(name)s.%(funcName)s %(message)s'
 )
+
+rootLogger = logging.getLogger()
+rootLogger.setLevel(LOGLEVEL)
+
+fileHandler = logging.FileHandler(f'../../timings/{int(time.time())}.log')
+fileHandler.setFormatter(logFormatter)
+rootLogger.addHandler(fileHandler)
+
+consoleHandler = logging.StreamHandler()
+consoleHandler.setFormatter(logFormatter)
+rootLogger.addHandler(consoleHandler)
 
 
 @click.command()
@@ -24,7 +34,7 @@ def main(case_count, event_count):
     # Create our world where we simulate a pandemic. This is our playground.
     # Set a beginning for our world
 
-    world = World(date.fromisoformat('2020-02-01'))
+    world = World()
 
     # Populate default entities in our world
     # Counties of interest

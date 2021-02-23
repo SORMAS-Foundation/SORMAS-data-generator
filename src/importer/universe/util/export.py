@@ -9,8 +9,10 @@ from sormas.rest import ApiException
 from universe.event import Event
 from universe.event_participant import EventParticipant
 
+logger = logging.getLogger(__name__)
 
-def json(world):
+
+def json_export(world):
     """
     Dump cases of our world to JSON
     :type world: World
@@ -27,22 +29,22 @@ def json(world):
         f.write(s)
 
 
-def sormas(world):
+def sormas_export(world):
     """
 
     :type world: World
     """
 
     with sormas_api.ApiClient(world.sormas_api_config) as api_client:
-        logging.info(f'Export to SORMAS')
+        logger.info(f'Export to SORMAS')
         day = world.today
         for case in day.cases:
             person_dto = case.person
             case_data_dto = case.inner
             try:
-                logging.info(f'importing person: {person_dto.uuid}')
+                logger.info(f'importing person: {person_dto.uuid}')
                 sormas_api.PersonControllerApi(api_client).post_persons(person_dto=[person_dto])
-                logging.info(f'importing case: {person_dto.uuid}')
+                logger.info(f'importing case: {person_dto.uuid}')
                 sormas_api.CaseControllerApi(api_client).post_cases(case_data_dto=[case_data_dto])
             except ApiException as e:
                 logging.exception("Exception: %s\n" % e)
@@ -51,9 +53,9 @@ def sormas(world):
             person_dto = contact.person
             contact_dto = contact.inner
             try:
-                logging.info(f'importing person: {person_dto.uuid}')
+                logger.info(f'importing person: {person_dto.uuid}')
                 sormas_api.PersonControllerApi(api_client).post_persons(person_dto=[person_dto])
-                logging.info(f'importing contact: {person_dto.uuid}')
+                logger.info(f'importing contact: {person_dto.uuid}')
                 sormas_api.ContactControllerApi(api_client).post_contacts(contact_dto=[contact_dto])
             except ApiException as e:
                 logging.exception("Exception: %s\n" % e)
@@ -61,7 +63,7 @@ def sormas(world):
         event: Event
         for event in day.events:
             try:
-                logging.info(f'importing event: {person_dto.uuid}')
+                logger.info(f'importing event: {person_dto.uuid}')
                 sormas_api.EventControllerApi(api_client).post_events(event_dto=[event.inner])
             except ApiException as e:
                 logging.exception("Exception: %s\n" % e)
@@ -70,9 +72,9 @@ def sormas(world):
             try:
                 participant: EventParticipant
                 for participant in event.participants:
-                    logging.info(f'importing person: {person_dto.uuid}')
+                    logger.info(f'importing person: {person_dto.uuid}')
                     sormas_api.PersonControllerApi(api_client).post_persons(person_dto=[participant.person])
-                    logging.info(f'importing event participant: {person_dto.uuid}')
+                    logger.info(f'importing event participant: {person_dto.uuid}')
                     sormas_api.EventParticipantControllerApi(api_client).post_event_participants(
                         event_participant_dto=[participant.inner]
                     )
@@ -80,4 +82,4 @@ def sormas(world):
             except ApiException as e:
                 logging.exception("Exception: %s\n" % e)
 
-    logging.info('DONE!')
+    logger.info('DONE!')
