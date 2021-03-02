@@ -43,7 +43,7 @@ def main(case_count, event_count):
     world.export_sormas()
     # world.export_json()
 
-    if os.environ.get('ANALYZE_PERFORMANCE', False):
+    if os.environ.get('ANALYZE_PERFORMANCE', 'False').upper() == 'TRUE':
         analyze_performance()
 
 

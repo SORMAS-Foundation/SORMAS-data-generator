@@ -5,12 +5,21 @@ from datetime import datetime
 import psycopg2
 
 
-def sormas_db_connect(host=None, port='5432', dbname='sormas', user='postgres', password='password'):
+def sormas_db_connect(host=None, port=None, dbname=None, user=None, password=None):
     if host is None:
-        if os.environ.get('DB_HOST'):
-            host = os.environ.get('DB_HOST')
-        else:
-            host = 'localhost'
+        host = os.environ.get('DB_HOST', 'localhost')
+
+    if port is None:
+        port = os.environ.get('DB_PORT', '5432')
+
+    if dbname is None:
+        dbname = os.environ.get('DB_NAME', 'sormas')
+
+    if user is None:
+        user = os.environ.get('SORMAS_POSTGRES_USER', 'sormas_user')
+
+    if password is None:
+        password = os.environ.get('SORMAS_POSTGRES_PASSWORD', 'password')
 
     conn = psycopg2.connect(host=host, port=port, dbname=dbname, user=user, password=password)
     return conn
