@@ -1,28 +1,21 @@
 import logging
 import os
-import time
 
 import click
 
 from performance.evaluate import analyze_performance
 from universe.world import World
 
-PERFORMANCE_LOG_DIR = os.environ.get('PERFORMANCE_LOG_DIR', f'../../timings/')
-
 # noinspection PyArgumentList
 logging.basicConfig(
     level=os.environ.get('LOGLEVEL', 'DEBUG').upper(),
     format='%(asctime)s %(name)s.%(funcName)s %(message)s',
-    handlers=[
-        logging.FileHandler(os.path.join(PERFORMANCE_LOG_DIR, f'{int(time.time())}.log')),
-        logging.StreamHandler()
-    ]
 )
 
 
 @click.command()
-@click.option('--case-count', default=3, help='Number of cases you want to import.')
-@click.option('--event-count', default=2, help='Number of events you want to import.')
+@click.option('--case-count', default=1, help='Number of cases you want to import.')
+@click.option('--event-count', default=1, help='Number of events you want to import.')
 def main(case_count, event_count):
     logging.info(f'Importing {case_count} cases')
     logging.info(f'Importing {event_count} events')
@@ -50,7 +43,7 @@ def main(case_count, event_count):
     world.export_sormas()
     # world.export_json()
 
-    if os.environ.get('ANALYZE_PERFORMANCE'):
+    if os.environ.get('ANALYZE_PERFORMANCE', False):
         analyze_performance()
 
 

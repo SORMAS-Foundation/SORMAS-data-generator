@@ -25,7 +25,7 @@ if [[ -z "${DOCKERIZED}" ]]; then
     --package-name sormas
 
   sudo chown -R "$USER":"$USER" out
-  PIP_REQ_PATH=requirements.txt
+  PIP_REQ_PATH=../config/requirements.txt
 
 else
 
