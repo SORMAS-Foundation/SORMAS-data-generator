@@ -99,7 +99,8 @@ services:
       - CASE_COUNT=${CASE_COUNT}
       - EVENT_COUNT=${EVENT_COUNT}
       - PERFORMANCE_LOG_DIR=${PERFORMANCE_LOG_DIR}
-      - ANALYZE_PERFORMANCE=true
+      - ANALYZE_PERFORMANCE=${ANALYZE_PERFORMANCE}
+      - LOGLEVEL=${LOGLEVEL}
     volumes:
       - ${SORMAS_PATH}/timings:${PERFORMANCE_LOG_DIR}
     depends_on:

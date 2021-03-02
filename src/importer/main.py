@@ -8,7 +8,7 @@ from universe.world import World
 
 # noinspection PyArgumentList
 logging.basicConfig(
-    level=os.environ.get('LOGLEVEL', 'DEBUG').upper(),
+    level=os.environ.get('LOGLEVEL', 'WARNING').upper(),
     format='%(asctime)s %(name)s.%(funcName)s %(message)s',
 )
 
