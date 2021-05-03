@@ -13,13 +13,13 @@ def sormas_db_connect(host=None, port=None, dbname=None, user=None, password=Non
         port = os.environ.get('DB_PORT', '5432')
 
     if dbname is None:
-        dbname = os.environ.get('DB_NAME', 'sormas')
+        dbname = os.environ.get('DB_NAME', 'sormas_db')
 
     if user is None:
         user = os.environ.get('SORMAS_POSTGRES_USER', 'sormas_user')
 
     if password is None:
-        password = os.environ.get('SORMAS_POSTGRES_PASSWORD', 'password')
+        password = os.environ.get('SORMAS_POSTGRES_PASSWORD', 'sormas')
 
     conn = psycopg2.connect(host=host, port=port, dbname=dbname, user=user, password=password)
     return conn

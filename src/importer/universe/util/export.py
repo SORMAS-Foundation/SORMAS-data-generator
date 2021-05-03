@@ -7,7 +7,7 @@ from json import JSONEncoder
 import sormas as sormas_api
 from sormas.rest import ApiException
 
-from config import PERFORMANCE_LOG_DIR, std_formatter
+#from config import PERFORMANCE_LOG_DIR, std_formatter
 from universe.event import Event
 from universe.event_participant import EventParticipant
 
@@ -40,9 +40,9 @@ def sormas_export(world):
     with sormas_api.ApiClient(world.sormas_api_config) as api_client:
         day = world.today
 
-        case_handler = logging.FileHandler(os.path.join(PERFORMANCE_LOG_DIR, 'cases.log'))
-        case_handler.setFormatter(std_formatter)
-        logger.addHandler(case_handler)
+        #case_handler = logging.FileHandler(os.path.join(PERFORMANCE_LOG_DIR, 'cases.log'))
+        #case_handler.setFormatter(std_formatter)
+        #logger.addHandler(case_handler)
         for case in day.cases:
             person_dto = case.person
             case_data_dto = case.inner
@@ -54,11 +54,11 @@ def sormas_export(world):
             except ApiException as e:
                 logging.exception("Exception: %s\n" % e)
 
-        logger.removeHandler(case_handler)
+        #logger.removeHandler(case_handler)
 
-        contact_handlers = logging.FileHandler(os.path.join(PERFORMANCE_LOG_DIR, 'contacts.log'))
-        contact_handlers.setFormatter(std_formatter)
-        logger.addHandler(contact_handlers)
+        #contact_handlers = logging.FileHandler(os.path.join(PERFORMANCE_LOG_DIR, 'contacts.log'))
+        #contact_handlers.setFormatter(std_formatter)
+        #logger.addHandler(contact_handlers)
 
         for contact in day.contacts:
             person_dto = contact.person
@@ -71,11 +71,11 @@ def sormas_export(world):
             except ApiException as e:
                 logging.exception("Exception: %s\n" % e)
 
-        logger.removeHandler(contact_handlers)
+        #logger.removeHandler(contact_handlers)
 
-        event_handlers = logging.FileHandler(os.path.join(PERFORMANCE_LOG_DIR, 'events.log'))
-        event_handlers.setFormatter(std_formatter)
-        logger.addHandler(event_handlers)
+        #event_handlers = logging.FileHandler(os.path.join(PERFORMANCE_LOG_DIR, 'events.log'))
+        #event_handlers.setFormatter(std_formatter)
+        #logger.addHandler(event_handlers)
 
         event: Event
         for event in day.events:
@@ -86,11 +86,11 @@ def sormas_export(world):
             except ApiException as e:
                 logging.exception("Exception: %s\n" % e)
 
-        logger.removeHandler(event_handlers)
+        #logger.removeHandler(event_handlers)
 
-        event_participants_handlers = logging.FileHandler(os.path.join(PERFORMANCE_LOG_DIR, 'event_participants.log'))
-        event_participants_handlers.setFormatter(std_formatter)
-        logger.addHandler(event_participants_handlers)
+        #event_participants_handlers = logging.FileHandler(os.path.join(PERFORMANCE_LOG_DIR, 'event_participants.log'))
+        #event_participants_handlers.setFormatter(std_formatter)
+        #logger.addHandler(event_participants_handlers)
 
         for event in day.events:
             try:
@@ -108,4 +108,4 @@ def sormas_export(world):
             except ApiException as e:
                 logging.exception("Exception: %s\n" % e)
 
-        logger.removeHandler(event_participants_handlers)
+        #logger.removeHandler(event_participants_handlers)
