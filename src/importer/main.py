@@ -5,6 +5,8 @@ import click
 
 from performance.evaluate import analyze_performance
 from universe.world import World
+from sormas import Disease
+
 
 # noinspection PyArgumentList
 logging.basicConfig(
@@ -16,22 +18,20 @@ logging.basicConfig(
 @click.command()
 @click.option('--case-count', default=1, help='Number of cases you want to import.')
 @click.option('--event-count', default=1, help='Number of events you want to import.')
-def main(case_count, event_count):
+@click.option('--region', default='Niedersachsen', help='Region location.')
+@click.option('--district', default='Wolfsburg', help='District location.')
+@click.option('--disease', default=Disease.CORONAVIRUS, help='Type of disease.')
+def main(case_count, event_count, region, district, disease):
     logging.info(f'Importing {case_count} cases')
     logging.info(f'Importing {event_count} events')
     # Set everything up
     # Create our world where we simulate a pandemic. This is our playground.
     # Set a beginning for our world
 
-    world = World()
+    world = World(disease=disease)
 
-    # Populate default entities in our world
-    # Counties of interest
-    lower_saxony = 'Niedersachsen'
-    world.add_region(lower_saxony)
-    world.add_district('Braunschweig', lower_saxony)
-    world.add_district('Salzgitter', lower_saxony)
-    world.add_district('Wolfsburg', lower_saxony)
+    # # Populate default entities in our world
+    world.add_district(district, region)
 
     world.pre_populate_cases_and_contacts(n=case_count)
 
@@ -45,6 +45,8 @@ def main(case_count, event_count):
 
     if os.environ.get('ANALYZE_PERFORMANCE', 'False').upper() == 'TRUE':
         analyze_performance()
+
+    logging.info('Done')
 
 
 if __name__ == '__main__':

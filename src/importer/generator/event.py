@@ -20,7 +20,7 @@ p_known_participant = 0.01  # 0.2 # proportion of participants who are a case
 random.seed(42)
 
 
-def gen_event_dto(event_desc=None, start_date=None, location=None,disease= None):
+def gen_event_dto(event_desc=None, start_date=None, location=None, disease=None):
     if event_desc is None:
         raise NotImplementedError
 
@@ -41,8 +41,7 @@ def gen_event_dto(event_desc=None, start_date=None, location=None,disease= None)
         reporting_user=surv_sup_user_ref(),
         start_date=start_date,
         event_location=location,
-        disease=Disease.CORONAVIRUS
-        # todo region + district is required in the UI!
+        disease=disease,
     )
     return event_dto
 

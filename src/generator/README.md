@@ -4,7 +4,7 @@ An overview can be found in the presentation [presentation/sormas-oegd-credible-
 
 The scripts consists essentially in three parts:
 1. the parameters and functions
-2. the reading of input data in [data/in/](data/in/) (the case counts from RKI) and the generating of the data set, wich is stored as RDS, CSV and Excel files in [data/out/](data/out/)
+2. the reading of input data in [data/in/](data/in/) (the case counts from RKI) and the generating of the data set, which is stored as RDS, CSV and Excel files in [data/out/](data/out/)
 3. the plots, which are stored in [img/](img/)
 
 Parts 2 and 3 are largely independent. Part to is within `if (generate_dataset) {...}`, if `generate_dataset` is `FALSE`, the data set is loaded from the RDS files to be used for the plots.
@@ -24,7 +24,7 @@ Not simulations or scenarios! Rather "play" and demonstration  data: also readab
 ### Adding new fields for a more complete data set
 
 Addresses:
-- assign a proper address to each geolocation, e.g., through the Google Maps API 
+- assign a proper address to each geolocation, e.g., through the Google Maps API
 
 Tests, quarantine, isolation:
 - tested persons as fourth person category besides case, contact and participant (one person can be any number of those at the same time)
@@ -33,15 +33,15 @@ Tests, quarantine, isolation:
 - whether a case is in isolation
 - dates of isolation/quarantine start and end
 
-Occupation/setting of a person, an infection, an event, especially according "household", screening, and to IfSG definitions (), see RKI's [Epidemiologisches Bulletin](https://www.rki.de/DE/Content/Infekt/EpidBull/epid_bull_node.html) 38/20 and RKI's Lagebricht 
+Occupation/setting of a person, an infection, an event, especially according "household", screening, and to IfSG definitions (), see RKI's [Epidemiologisches Bulletin](https://www.rki.de/DE/Content/Infekt/EpidBull/epid_bull_node.html) 38/20 and RKI's Lagebricht
 
 Context:
-- place of infection (address, location ,type) 
-- type of venue/setting for infection, contact, event  venue, 
+- place of infection (address, location ,type)
+- type of venue/setting for infection, contact, event  venue,
 - name of event
 - date of contact
 
-Hospitalization and death: 
+Hospitalization and death:
 - whether in ICU
 - dates of hospitalization start and end
 - date of death
@@ -78,7 +78,7 @@ Transmission and infection dynamics:
 - age-dependent susceptibility
 - age-dependent infectiosity
 - more realistic period of infectiosity
-- age-dependent probability of being in a type of place of infection, of contact or event setting 
+- age-dependent probability of being in a type of place of infection, of contact or event setting
 - transmission risk dependent on contact and event setting type
 - contacts between cases follow the same social-contact-matrix based probabilities
 
@@ -87,8 +87,8 @@ Age (and sex?) dependent symptoms:
 - given that one has symptoms, age (and sex?) dependent symptom and age specific probabilities from the literature
 - non-cases may also have symptoms (?)
 
-Spread dynamics: 
-- not just one retrospective snapshot, but day-to-day changes in reporting, contacts, etc.: a contact can get sick, contacted, be tested (negtive or positive > case), go into quarantine...
+Spread dynamics:
+- not just one retrospective snapshot, but day-to-day changes in reporting, contacts, etc.: a contact can get sick, contacted, be tested (negative or positive > case), go into quarantine...
 
 Tests:
 - take positive rate into account
