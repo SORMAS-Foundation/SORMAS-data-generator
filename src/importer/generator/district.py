@@ -10,7 +10,7 @@ from generator.utils import sormas_db_connect, duuid
 def default_district():
     with sormas_db_connect() as conn:
         with conn.cursor() as cur:
-            cur.execute("SELECT uuid FROM district")
+            cur.execute("SELECT uuid FROM district LIMIT 1")
             uuid = cur.fetchone()[0]
             return DistrictReferenceDto(uuid=uuid)
 
@@ -34,8 +34,10 @@ def insert_district(district, region_id):
             _id = max(all_ids) + 1
             date = datetime.date.today()
             uuid = duuid()
-            cur.execute("INSERT INTO district (id, changedate, creationdate, name, uuid, region_id, epidcode, archived)"
-                        "VALUES (%s,%s, %s, %s, %s, %s, %s, %s)",
-                        [_id, date, date, district, uuid, region_id, 'DIS', False])
+            cur.execute(
+                "INSERT INTO district"
+                " (id, changedate, creationdate, name, uuid, region_id, epidcode, archived)"
+                " VALUES (%s,%s, %s, %s, %s, %s, %s, %s)",
+                [_id, date, date, district, uuid, region_id, 'DIS', False])
 
             return _id, uuid

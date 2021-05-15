@@ -1,6 +1,6 @@
-psycopg2==2.8.6
+click
 numpy==1.19.4
 pandas==1.1.5
-click
-zeep
+psycopg2-binary==2.8.6
 pygrok
+zeep
