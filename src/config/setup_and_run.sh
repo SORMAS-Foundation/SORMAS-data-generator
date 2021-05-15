@@ -7,7 +7,7 @@ cd importer || exit
 
 python3 main.py \
     --case-count $CASE_COUNT \
-    --event-count $EVENT_COUNT
+    --event-count $EVENT_COUNT \
     --region $REGION \
-    --district $DISTRICT
+    --district $DISTRICT \
     --disease $DISEASE
